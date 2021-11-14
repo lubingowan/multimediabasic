@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		832551C5273AAD6A00EBA3A6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 832551C4273AAD6A00EBA3A6 /* main.cpp */; };
+		838D102B2740CED4009FCCEA /* libuv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 838D102A2740CED4009FCCEA /* libuv.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +28,11 @@
 		832551C4273AAD6A00EBA3A6 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		832551CD273AB4E400EBA3A6 /* yuv_raw.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = yuv_raw.hpp; sourceTree = "<group>"; };
 		832551CF273C246D00EBA3A6 /* rgb_raw.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = rgb_raw.hpp; sourceTree = "<group>"; };
+		832551D1273D827C00EBA3A6 /* pcm_raw.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = pcm_raw.hpp; sourceTree = "<group>"; };
+		832551D3273EF26800EBA3A6 /* h264_raw.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = h264_raw.hpp; sourceTree = "<group>"; };
+		838D10272740A140009FCCEA /* aac_raw.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = aac_raw.hpp; sourceTree = "<group>"; };
+		838D10282740C23B009FCCEA /* rtp_parse.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = rtp_parse.hpp; sourceTree = "<group>"; };
+		838D102A2740CED4009FCCEA /* libuv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libuv.a; path = ../../../../../usr/local/Cellar/libuv/1.42.0/lib/libuv.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				838D102B2740CED4009FCCEA /* libuv.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,10 +50,15 @@
 		832551B8273AAD6A00EBA3A6 = {
 			isa = PBXGroup;
 			children = (
+				838D10282740C23B009FCCEA /* rtp_parse.hpp */,
+				838D10272740A140009FCCEA /* aac_raw.hpp */,
+				832551D3273EF26800EBA3A6 /* h264_raw.hpp */,
+				832551D1273D827C00EBA3A6 /* pcm_raw.hpp */,
 				832551CF273C246D00EBA3A6 /* rgb_raw.hpp */,
 				832551CD273AB4E400EBA3A6 /* yuv_raw.hpp */,
 				832551C3273AAD6A00EBA3A6 /* mmbasic */,
 				832551C2273AAD6A00EBA3A6 /* Products */,
+				838D10292740CED3009FCCEA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -64,6 +76,14 @@
 				832551C4273AAD6A00EBA3A6 /* main.cpp */,
 			);
 			path = mmbasic;
+			sourceTree = "<group>";
+		};
+		838D10292740CED3009FCCEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				838D102A2740CED4009FCCEA /* libuv.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,7 +156,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -183,6 +203,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				"MTL_ENABLE_DEBUG_INFO[arch=*]" = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -195,7 +216,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -244,7 +265,10 @@
 		832551C9273AAD6A00EBA3A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/Cellar/libuv/1.42.0/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/libuv/1.42.0/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -252,7 +276,10 @@
 		832551CA273AAD6A00EBA3A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /usr/local/Cellar/libuv/1.42.0/include;
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/libuv/1.42.0/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

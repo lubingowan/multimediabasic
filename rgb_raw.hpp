@@ -2,7 +2,7 @@
 //  rgb_raw.hpp
 //  mmbasic
 //
-//  Created by 万露兵 on 2021/11/11.
+//  Created by lubing.wan on 2021/11/11.
 //
 
 #ifndef rgb_raw_hpp
@@ -247,6 +247,159 @@ int mm_rgb24_to_bmp(const std::string &rgb, int w, int h, const std::string &bmp
     printf("Finish generate %s!\n", bmp.c_str());
     return 0;
 }
+
+//RGB to YUV420
+bool RGB24_TO_YUV420(uint8_t *rgbbuf, int w, int h, uint8_t *yuvbuf)
+{
+    assert(yuvbuf);
+    assert(rgbbuf);
+    using namespace std;
+    uint8_t *ptrY, *ptrU, *ptrV, *ptrRGB;
+    memset(yuvbuf, 0, w * h * 3 >> 1);
+    
+    ptrY = yuvbuf;
+    ptrU = yuvbuf + w * h;
+    ptrV = ptrU + (w * h >> 2);
+    
+    uint8_t y, u, v, r, g, b;
+    
+    for (int j = 0; j < h; j++){
+        ptrRGB = rgbbuf + w * j * 3;
+        for (int i = 0; i < w; i++){
+            r = *(ptrRGB++);
+            g = *(ptrRGB++);
+            b = *(ptrRGB++);
+//            y = (( 66 * r + 129 * g +  25 * b + 128) >> 8) + 16;
+//            u = (( -38 * r -  74 * g + 112 * b + 128) >> 8) + 128;
+//            v = (( 112 * r -  94 * g -  18 * b + 128) >> 8) + 128;
+            
+            y = (( 66 * r + 129 * g +  25 * b) >> 8) + 20;
+            u = (( -38 * r -  74 * g + 112 * b) >> 8) + 128;
+            v = (( 112 * r -  94 * g -  18 * b) >> 8) + 128;
+            
+//            y = (( 70 * r + 130 * g +  30 * b + 128) >> 8) + 16;
+//            u = (( -38 * r -  74 * g + 112 * b + 128) >> 8) + 128;
+//            v = (( 112 * r -  94 * g -  18 * b + 128) >> 8) + 128;
+            
+            *(ptrY++) = y;
+            if (j % 2 == 0 && i % 2 == 0){
+                *(ptrU++) = u;
+            }
+            else{
+                if (i % 2 == 0){
+                    *(ptrV++) = v;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+int mm_rgb24_to_yuv420(const std::string url, int w, int h){
+    using namespace std;
+    
+    ifstream in(url, ifstream::in);
+    ofstream out("output_rgb24_to_yuv420.yuv", ofstream::out);
+
+    size_t rgblen = w * h * 3;
+    size_t yuvlen = w * h * 3 >> 1;
+    
+    uint8_t rgbpic[rgblen];
+    uint8_t yuvpic[yuvlen];
+
+    {
+        in.read((char*)rgbpic, rgblen);
+        
+        RGB24_TO_YUV420(rgbpic, w, h, yuvpic);
+        out.write((char*)yuvpic, yuvlen);
+    }
+
+    in.close();
+    out.close();
+
+    return 0;
+}
+
+
+int mm_rgb24_colorbar(int width, int height, const std::string &url){
+
+    using namespace std;
+    
+    size_t len = width * height * 3;
+    uint8_t data[len];
+
+    int barwidth = width / 8;
+
+    ofstream out(url, ofstream::out);
+    if (!out.is_open()) {
+        cout << "output file open fail" << endl;
+        return -1;
+    }
+
+    for(int j = 0; j < height; j++)
+    {
+        for(int i = 0; i < width; i++)
+        {
+            int barnum = i / barwidth;
+            switch(barnum) {
+            case 0: {
+                data[(j * width + i) * 3 + 0] = 255;
+                data[(j * width + i) * 3 + 1] = 255;
+                data[(j * width + i) * 3 + 2] = 255;
+                break;
+            }
+            case 1: {
+                data[(j * width + i) * 3 + 0] = 255;
+                data[(j * width + i) * 3 + 1] = 255;
+                data[(j * width + i) * 3 + 2] = 0;
+                break;
+            }
+            case 2: {
+                data[(j * width + i) * 3 + 0] = 0;
+                data[(j * width + i) * 3 + 1] = 255;
+                data[(j * width + i) * 3 + 2] = 255;
+                break;
+            }
+            case 3: {
+                data[(j * width + i) * 3 + 0] = 0;
+                data[(j * width + i) * 3 + 1] = 255;
+                data[(j * width + i) * 3 + 2] = 0;
+                break;
+            }
+            case 4: {
+                data[(j*width+i)*3+0]=255;
+                data[(j*width+i)*3+1]=0;
+                data[(j*width+i)*3+2]=255;
+                break;
+            }
+            case 5: {
+                data[(j*width+i)*3+0]=255;
+                data[(j*width+i)*3+1]=0;
+                data[(j*width+i)*3+2]=0;
+                break;
+            }
+            case 6: {
+                data[(j*width+i)*3+0]=0;
+                data[(j*width+i)*3+1]=0;
+                data[(j*width+i)*3+2]=255;
+
+                break;
+            }
+            case 7: {
+                data[(j*width+i)*3+0]=0;
+                data[(j*width+i)*3+1]=0;
+                data[(j*width+i)*3+2]=0;
+                break;
+            }
+            }
+        }
+    }
+    out.write((char*)data, len);
+    out.close();
+
+    return 0;
+}
+
 
 
 #endif /* rgb_raw_hpp */
